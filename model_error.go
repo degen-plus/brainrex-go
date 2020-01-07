@@ -9,8 +9,8 @@
 
 package brainrex
 
-// The text object takes any string of text.
-type Text struct {
-	// String of text or document to be analyzed
-	Text string `json:"text,omitempty"`
+type ModelError struct {
+	Code int32 `json:"code,omitempty"`
+	Message string `json:"message,omitempty"`
+	Fields string `json:"fields,omitempty"`
 }

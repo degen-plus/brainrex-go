@@ -9,8 +9,6 @@
 
 package brainrex
 
-// The text object takes any string of text.
-type Text struct {
-	// String of text or document to be analyzed
-	Text string `json:"text,omitempty"`
+// Time series data points. Data points must be sorted by timestamp in ascending order and if there is duplicated timestamp, in both cases the API will not work.
+type TimeSeries struct {
 }

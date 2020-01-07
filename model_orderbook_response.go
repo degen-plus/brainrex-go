@@ -9,8 +9,13 @@
 
 package brainrex
 
-// The text object takes any string of text.
-type Text struct {
-	// String of text or document to be analyzed
-	Text string `json:"text,omitempty"`
+type OrderbookResponse struct {
+	// Name of the currency pair
+	BaseTradingSymbol string `json:"base_trading_symbol,omitempty"`
+	// Name of the exchange
+	Exchange string `json:"exchange,omitempty"`
+	// Limit depth to extract from the orderbook
+	Limit float32 `json:"limit,omitempty"`
+	// Name of the data format availables (standard)
+	QuoteTradingSymbol string `json:"quote_trading_symbol,omitempty"`
 }

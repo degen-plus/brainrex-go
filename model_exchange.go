@@ -9,8 +9,7 @@
 
 package brainrex
 
-// The text object takes any string of text.
-type Text struct {
-	// String of text or document to be analyzed
-	Text string `json:"text,omitempty"`
+type Exchange struct {
+	// Name of the digital asset exchange to get data from
+	Exchange string `json:"exchange,omitempty"`
 }

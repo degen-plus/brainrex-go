@@ -1,409 +1,408 @@
 ---
 swagger: "2.0"
 info:
-  description: "Welcome to the Brainrex API explorer, we make analytics tools for\
-    \ crypto and blockchain. Our currently propiertary models offer sentiment analysis,\
-    \ market making, blockchain monitoring and face-id verification. This AI models\
-    \ can be consumed from this API. We also offer integrations to open data and propietary\
-    \ data providers, as well as free test data we collect. There is a collection\
-    \ of data transformation tools. Join our Telegram group to get the latest news\
-    \ and ask questions [https://t.me/brainrex, #brainrex](https://t.me/brainrex).\
-    \ More about Brainrex at [https://brainrex.com](http://brainrex.com). Full Documentation\
-    \ can be found at [https://brainrexapi.github.io/docs](https://brainrexapi.github.io/docs)"
-  version: "0.1.1"
-  title: "Brainrex API Explorer"
-  termsOfService: "http://brainrex.com/privacy/"
-  contact:
-    email: "support@brainrex.com"
-host: "brainrexapi.appspot.com:5000"
-basePath: "/api"
+  description: "The Brainrex API is a collection of analytics tools and data integrations\
+    \ made for blockchain developers. In particular we offer Natural Language Processing\
+    \ and Anomaly detection algorithms that have been fine tune to understand text\
+    \ data and time series in the domain speficic setting of cryptocurrency and blockchain\
+    \ technology. This technology is intended to be use as building blocks to bigger\
+    \ applications, we offer examples on how to use them for Trading Backtesting and\
+    \ Smart Contract anomaly monitoring."
+  version: "1.0.2"
+  title: "BrainRex API"
+host: "api.bitlongs.com"
+basePath: "/"
 tags:
-- name: "Sentiment Analysis"
-  description: "Extract sentiment from text and documents."
+- name: "language"
+  description: "The Language API providers sentiment analysis, investor sentiment\
+    \ analysis and crypto entity analysis to developers. Our neural networks have\
+    \ been trained to spot common entities and to know how they affect the market."
+- name: "anomaly"
+  description: "The Anomaly Detector detects anomalies automatically in timeseries\
+    \ data. It supports two functionalities, one is for detecting the whole series\
+    \ with model trained by the timeseries, another is detecting last point with model\
+    \ trained by points before. By using this service, business customers can discover\
+    \ incidents and establish a logic flow for root cause analysis. Ensure online\
+    \ service quality is one of the main reasons we develop this service. Improving\
+    \ anomaly detection service to provide precise results will always be fundamental\
+    \ work of our team."
+- name: "integrations"
+  description: "The integrations API is a single endpoint that connects to blockchain\
+    \ network and cryptocurrency data providers. From this API you collect and perform\
+    \ some ETL transformations on your data as well as store it. Data is provided\
+    \ through third parties and you must purchase separetely. Free data is included\
+    \ in all brainrex plans. Learn limitis "
   externalDocs:
-    description: "Find out more"
-    url: "http://brainrex.com/sentiment"
-- name: "Crypto"
-  description: "Market data from 55 crypto exchanges.And 600 currency pairs"
-  externalDocs:
-    description: "Find out more"
-    url: "http://console.brainrex.com/docs/crypto"
-- name: "Blockchain"
-  description: "On Chain Data from blokchain networks and ethereum tokens."
-  externalDocs:
-    description: "Find out more"
-    url: "http://console.brainrex.com/docs/blockchain"
-- name: "Face-ID"
-  description: "Selfie to ID/Passport Verification."
-  externalDocs:
-    description: "Documentation for client libraries"
-    url: "http://console.brainrex.com/docs/faceid"
-schemes:
-- "https"
+    url: "https://developers.brainrex.com/#/integrations"
 consumes:
 - "application/json"
 produces:
 - "application/json"
 security:
-- oauth2:
-  - "uid"
+- APIKeyHeader: []
 paths:
-  /get_sentiment:
+  /sentiment/get_general_sentiment:
     post:
       tags:
-      - "Sentiment Analysis"
-      summary: "Sentiment analysis for any given blob of text"
-      description: "Gives a -1 to 1 score, depending on bearish/bullish sentiment"
-      operationId: "sentiment.get_sentiment"
+      - "language"
+      summary: "Returns a -1 to 1 score, depending on positive/negative sentiment"
+      description: "This endpoints returns a score from -1 to +1 where depending on\
+        \ negative or positive attitude in the text."
+      operationId: "language.get_general_sentiment"
       parameters:
       - in: "body"
         name: "text"
-        description: "String of text to be analyzed. I can be in any language."
+        description: "String of text to be analyze for general sentiment."
         required: true
         schema:
-          $ref: "#/definitions/text"
+          $ref: "#/definitions/Text"
         x-exportParamName: "Text"
       responses:
-        201:
-          description: "Successfully scored blob of text"
-          schema:
-            type: "string"
-            example: "0.34300"
-  /get_buy_sentiment:
-    post:
-      tags:
-      - "Sentiment Analysis"
-      summary: "Sentiment analysis score using a model trained for buy signals."
-      description: "Gives a 0 to 1 score, depending on buy/sell sentiment"
-      operationId: "sentiment.get_price_sentiment"
-      parameters:
-      - in: "body"
-        name: "text"
-        description: "String of text to be analyzed. I can be in any language."
-        required: true
-        schema:
-          $ref: "#/definitions/text_1"
-        x-exportParamName: "Text"
-      responses:
-        201:
-          description: "Successfully scored blob of text according to price sentiment"
+        "201":
+          description: "Successfully scored blob of text according to price entiment"
           schema:
             type: "string"
             example: "-0.00023113513340259576"
-  /exchanges:
-    get:
-      tags:
-      - "Crypto"
-      summary: "The exchanges data structure supported by the Brainrex API"
-      description: "Read the list of supported exchanges in the Market Data API"
-      operationId: "exchanges.read"
-      parameters: []
-      responses:
-        200:
-          description: "Successful read supported exchanges list operation"
-          schema:
-            type: "array"
-            items:
-              type: "object"
-              properties:
-                ename:
-                  type: "string"
-  /markets:
-    get:
-      tags:
-      - "Crypto"
-      summary: "The markets data structure supported by the Brainrex Market API"
-      description: "Read the list of supported markets ( currency pairs ) in each\
-        \ exchange"
-      operationId: "exchanges.list"
-      parameters: []
-      responses:
-        200:
-          description: "Read the dictionary of supported currency pairs (Markets)\
-            \ in the supported exchanges"
-          schema:
-            type: "array"
-            items:
-              type: "object"
-              properties:
-                currencypair:
-                  type: "string"
-  /list_blockchain:
-    get:
-      tags:
-      - "Blockchain"
-      summary: "The blockchains data structure supported by the Brainrex API"
-      description: "List of supported blockchains networks for analysis. The full\
-        \ history of the networks are available."
-      operationId: "blockchain.list"
-      parameters: []
-      responses:
-        200:
-          description: "Succesfully read blockchain networks available"
-          schema:
-            type: "array"
-            items:
-              type: "object"
-              properties:
-                blockchain:
-                  type: "string"
-  /average_tx_fee:
+      security:
+      - APIKeyHeader: []
+  /language/get_price_sentiment:
     post:
       tags:
-      - "Blockchain"
-      summary: "Calculate average transccion fee of a given blockchain"
-      description: "Calculates the average trasnsaction fee of a given "
-      operationId: "blockchain.average_tx"
+      - "language"
+      summary: "Sentiment analysis score using a model trained for buy signals."
+      description: "Gives a 0 to 1 score, depending on buy/sell sentiment"
+      operationId: "language.get_price_sentiment"
+      parameters:
+      - in: "body"
+        name: "text"
+        description: "String of text to be analyze for investor sentiment."
+        required: true
+        schema:
+          $ref: "#/definitions/Text"
+        x-exportParamName: "Text"
+      responses:
+        "201":
+          description: "Successfully scored blob of text according to price entiment"
+          schema:
+            type: "string"
+            example: "-0.00023113513340259576"
+      security:
+      - APIKeyHeader: []
+  /entity/get_crypto_entities:
+    post:
+      tags:
+      - "language"
+      summary: "Extracts known crypto entities like coin names, exchanges, media from\
+        \ text."
+      description: "The Crypto Entities endpoint ingests written MIT Digital Currency\
+        \ Initiative Paper\nA paper describing how our sentiment and entity analyzer\
+        \ are built. And how the can be used for trading several cryptocurrencies\
+        \ successfully \nWe prove that using sentiment only as a input to a trading\
+        \ algorithm can be profitable. If combined with other machine learning models.\n\
+        We descri\nThis Paper could be published in MIT Crypto Economics Journal .\
+        \ . <br><br> Our AI selects from several models, choosing the one that fits\
+        \ the given data best, and we give you the avality to customize the sensitivy\
+        \ of the model. Our model has been trained to recognize anomalies in popular\
+        \ blockchain networks e.g. Bitcoin, Ethereum, learning from past events."
+      operationId: "language.get_crypto_entities"
+      parameters:
+      - in: "body"
+        name: "text"
+        description: "String of text to be analyze for investor sentiment."
+        required: true
+        schema:
+          $ref: "#/definitions/Text"
+        x-exportParamName: "Text"
+      responses:
+        "201":
+          description: "Successfully analyzed text for crypto entities."
+  /anomaly/json/detect:
+    post:
+      tags:
+      - "anomaly"
+      summary: "Detects anomalies in historical data in batches. This endpoint uses\
+        \ your entire dataset as input"
+      description: "The Anomaly Detect endpoint ingests time series data of all types,\
+        \ then monitors and detects abnormalities historical time series data. <br><br>\
+        \ Our AI selects from several models, choosing the one that fits the given\
+        \ data best, and we give you the avality to customize the sensitivy of the\
+        \ model. Our model has been trained to recognize anomalies in popular blockchain\
+        \ networks e.g. Bitcoin, Ethereum, learning from past events."
+      operationId: "anomaly.batch"
       parameters:
       - in: "body"
         name: "request"
-        description: "Name of the blockchain and date range."
-        required: true
+        description: "Time Series to be analyzed, with the following format."
+        required: false
         schema:
-          $ref: "#/definitions/request"
+          $ref: "#/definitions/TimeSeries"
         x-exportParamName: "Request"
       responses:
-        201:
-          description: "Succesfully return OHLCV dataset"
+        "200":
+          description: "Succesfully analyzed your entire time series for anomalies."
           schema:
-            type: "object"
-            properties:
-              start_date:
-                type: "string"
-                format: "date"
-                example: "2013/12/23"
-                description: "Start date in YYYY/MM/DD"
-              end_date:
-                type: "string"
-                format: "date"
-                example: "2014/12/23"
-                description: "End date in YYYY/MM/DD"
-              open:
-                type: "number"
-                format: "float"
-                example: 8148.72
-                description: "Opening price quote of the time frame with two decimal\
-                  \ points"
-              close:
-                type: "number"
-                format: "float"
-                example: 9148.72
-                description: "Closing price quote of the time frame with two decimal\
-                  \ points"
-              high:
-                type: "number"
-                format: "float"
-                example: 9190.72
-                description: "Highest price of the time frame with two decimal points"
-              vol:
-                type: "number"
-                format: "float"
-                example: 231.32
-                description: "Volume of currency exchanged in the time frame with\
-                  \ two decimal points"
-  /download_ticker:
+            type: "array"
+            items:
+              type: "boolean"
+        default:
+          description: "Unexpected error"
+          schema:
+            $ref: "#/definitions/Error"
+      security:
+      - APIKeyHeader: []
+  /crypto/get_candles:
     post:
       tags:
-      - "Crypto"
-      summary: "Download raw ticker data from major crypto markets"
-      description: "Downloads specified asset class and market and time frame. Of\
-        \ our raw ticker data format"
-      operationId: "exchanges.ticker_data_download"
-      parameters:
-      - in: "body"
-        name: "request"
-        description: "Person to create"
-        required: true
-        schema:
-          $ref: "#/definitions/request_1"
-        x-exportParamName: "Request"
-      responses:
-        201:
-          description: "Succesfully return OHLCV dataset"
-          schema:
-            type: "object"
-            properties:
-              start_date:
-                type: "string"
-                format: "date"
-                example: "2013/12/23"
-                description: "Start date in YYYY/MM/DD"
-              end_date:
-                type: "string"
-                format: "date"
-                example: "2014/12/23"
-                description: "End date in YYYY/MM/DD"
-              open:
-                type: "number"
-                format: "float"
-                example: 8148.72
-                description: "Opening price quote of the time frame with two decimal\
-                  \ points"
-              close:
-                type: "number"
-                format: "float"
-                example: 9148.72
-                description: "Closing price quote of the time frame with two decimal\
-                  \ points"
-              high:
-                type: "number"
-                format: "float"
-                example: 9190.72
-                description: "Highest price of the time frame with two decimal points"
-              vol:
-                type: "number"
-                format: "float"
-                example: 231.32
-                description: "Volume of currency exchanged in the time frame with\
-                  \ two decimal points"
-  /download_candles:
-    post:
-      tags:
-      - "Crypto"
+      - "integrations"
       summary: "Downloads candle format market data"
       description: "Returns a list of candle data from specified market and data range"
-      operationId: "exchanges.download_candles"
+      operationId: "crypto.get_candle_data"
       parameters:
       - in: "body"
-        name: "request"
-        description: "Person to create"
+        name: "CandleRequest"
+        description: "The Get candles end point return market data in Open High Close\
+          \ Volume format. In order to use this endpoint you need to enter your API\
+          \ keys to your data provider in the console"
         required: true
         schema:
-          $ref: "#/definitions/request_2"
-        x-exportParamName: "Request"
+          $ref: "#/definitions/CandleRequest"
+        x-exportParamName: "CandleRequest"
       responses:
-        201:
+        "201":
           description: "Succesfully return OHLCV dataset"
           schema:
-            type: "object"
-            properties:
-              start_date:
-                type: "string"
-                format: "date"
-                example: "2013/12/23"
-                description: "Start date in YYYY/MM/DD"
-              end_date:
-                type: "string"
-                format: "date"
-                example: "2014/12/23"
-                description: "End date in YYYY/MM/DD"
-              open:
-                type: "number"
-                format: "float"
-                example: 8148.72
-                description: "Opening price quote of the time frame with two decimal\
-                  \ points"
-              close:
-                type: "number"
-                format: "float"
-                example: 9148.72
-                description: "Closing price quote of the time frame with two decimal\
-                  \ points"
-              high:
-                type: "number"
-                format: "float"
-                example: 9190.72
-                description: "Highest price of the time frame with two decimal points"
-              vol:
-                type: "number"
-                format: "float"
-                example: 231.32
-                description: "Volume of currency exchanged in the time frame with\
-                  \ two decimal points"
-  /market_making:
+            $ref: "#/definitions/CandleResponse"
+  /crypto/get_exchange_assets:
     post:
       tags:
-      - "Crypto"
-      summary: "Market Making as a Service API."
-      description: "Our AI will trade at the risk level you want, you need to provide\
-        \ your credential to the exchange you are trading at."
-      operationId: "exchanges.marketmaker"
+      - "integrations"
+      summary: "Gets all coin pairs traded in specified exchange"
+      description: "This endpoint returns all the Available currency pairs"
+      operationId: "crypto.get_exchange_assets"
       parameters:
       - in: "body"
-        name: "request"
-        description: "Name of exchange and currency pair you want to provide liquidity"
+        name: "Exchange"
+        description: "Name of the cryptocurrency exchange"
         required: true
         schema:
-          $ref: "#/definitions/request_3"
-        x-exportParamName: "Request"
+          $ref: "#/definitions/Exchange"
+        x-exportParamName: "Exchange"
       responses:
-        201:
+        "200":
+          description: "OK. Succesfully returned supported exchanges."
+          schema:
+            $ref: "#/definitions/ExchangeAssetsResponse"
+  /crypto/get_orderbooks:
+    post:
+      tags:
+      - "integrations"
+      summary: "Returns the current state of the orderbook."
+      description: "This endpoint returns the current state of the ordebook with a\
+        \ limit set by you. The maximun orderbook depth is 25."
+      operationId: "crypto.get_orderbooks"
+      parameters:
+      - in: "body"
+        name: "OrderbookRequest"
+        description: "Exchange, trading pair and date rage for data"
+        required: true
+        schema:
+          $ref: "#/definitions/OrderbookRequest"
+        x-exportParamName: "OrderbookRequest"
+      responses:
+        "201":
           description: "Succesfully return OHLCV dataset"
           schema:
-            type: "object"
-            properties:
-              start_date:
-                type: "string"
-                example: "2013/12/23"
-                description: "Start date in YYYY/MM/DD"
-              end_date:
-                type: "string"
-                example: "2014/12/23"
-                description: "End date in YYYY/MM/DD"
-              open:
-                type: "string"
-                example: "8148.72"
-                description: "Opening price quote of the time frame with two decimal\
-                  \ points"
-              close:
-                type: "string"
-                example: "9148.72"
-                description: "Closing price quote of the time frame with two decimal\
-                  \ points"
-              high:
-                type: "string"
-                example: "9190.72"
-                description: "Highest price of the time frame with two decimal points"
-              vol:
-                type: "string"
-                example: "231.32"
-                description: "Volume of currency exchanged in the time frame with\
-                  \ two decimal points"
+            $ref: "#/definitions/OrderbookResponse"
+  /crypto/get_supported_exchanges:
+    get:
+      tags:
+      - "integrations"
+      summary: "Gets all cryptocurrency exchanges supported by the Brainrex API"
+      description: "Returns a list of candle data from specified market and data range"
+      operationId: "crypto.get_supported_exchanges"
+      parameters: []
+      responses:
+        "201":
+          description: "Succesfully return OHLCV dataset"
+          schema:
+            $ref: "#/definitions/SupportedExchanges"
+  /crypto/get_ticker:
+    post:
+      tags:
+      - "integrations"
+      summary: "Downloads candle format market data"
+      description: "Returns a list of candle data from specified market and data range"
+      operationId: "crypto.get_ticker"
+      parameters:
+      - in: "body"
+        name: "Exchange"
+        description: "Get ticker data from specified crypto exchange"
+        required: true
+        schema:
+          $ref: "#/definitions/Exchange"
+        x-exportParamName: "Exchange"
+      responses:
+        "201":
+          description: "Succesfully return OHLCV dataset"
+          schema:
+            $ref: "#/definitions/TickerResponse"
+securityDefinitions:
+  APIKeyHeader:
+    type: "apiKey"
+    name: "x-api-key"
+    in: "header"
+    x-apikeyInfoFunc: "app.apikey_auth"
 definitions:
-  request:
-    type: "object"
-    properties:
-      blockchain:
-        type: "string"
-        example: "bitstamp"
-        description: "Name of the exchange"
-      market:
-        type: "string"
-        example: "BTC-USD"
-        description: "Name of the currency pair"
-      data_format:
-        type: "string"
-        example: "standard"
-        description: "Name of the data format availables (standard)"
-      orient:
-        type: "string"
-        example: "records"
-        description: "Name of the market"
-      start_date:
-        type: "string"
-        example: "2013/12/31"
-        description: "Start date in YYYY/MM/DD"
-      end_date:
-        type: "string"
-        example: "2014/01/02 "
-        description: "End date YYYY/MM/DD"
-  text_1:
+  Text:
     type: "object"
     properties:
       text:
         type: "string"
-        description: "Text to be analyzed"
-  inline_response_200_1:
+        description: "String of text or document to be analyzed"
+    description: "The text object takes any string of text."
+    example:
+      text: "text"
+  Error:
     properties:
-      currencypair:
+      code:
+        type: "integer"
+        format: "int32"
+        example: 401
+      message:
         type: "string"
-  inline_response_201:
+        example: "The authorization token provided is not valid"
+      fields:
+        type: "string"
+  PointTimeSeries:
+    type: "object"
     properties:
-      start_date:
+      timestamp:
         type: "string"
-        format: "date"
-        example: "2013/12/23"
-        description: "Start date in YYYY/MM/DD"
+        format: "date-time"
+        example: "2012-01-01T20:30:43Z"
+        description: "Timestamp in datetime format"
+      value:
+        type: "number"
+        format: "float"
+        example: 453.32
+        description: "Value of the time series point"
+  TimeSeries:
+    type: "array"
+    description: "Time series data points. Data points must be sorted by timestamp\
+      \ in ascending order and if there is duplicated timestamp, in both cases the\
+      \ API will not work."
+    items:
+      $ref: "#/definitions/PointTimeSeries"
+    example:
+    - timestamp: "2016-01-01T00:00:00Z"
+      value: 826
+    - timestamp: "2016-02-01T00:00:00Z"
+      value: 799
+    - timestamp: "2016-03-01T00:00:00Z"
+      value: 890
+    - timestamp: "2016-04-01T00:00:00Z"
+      value: 900
+    - timestamp: "2016-05-01T00:00:00Z"
+      value: 961
+    - timestamp: "2016-06-01T00:00:00Z"
+      value: 935
+    - timestamp: "2016-07-01T00:00:00Z"
+      value: 894
+    - timestamp: "2016-08-01T00:00:00Z"
+      value: 1024
+    - timestamp: "2016-09-01T00:00:00Z"
+      value: 809
+    - timestamp: "2016-10-01T00:00:00Z"
+      value: 810
+    - timestamp: "2016-11-01T00:00:00Z"
+      value: 766
+    - timestamp: "2016-12-01T00:00:00Z"
+      value: 805
+    - timestamp: "2017-01-01T00:00:00Z"
+      value: 821
+    - timestamp: "2017-02-01T00:00:00Z"
+      value: 4324
+    - timestamp: "2017-03-01T00:00:00Z"
+      value: 883
+    - timestamp: "2017-04-01T00:00:00Z"
+      value: 898
+    - timestamp: "2017-05-01T00:00:00Z"
+      value: 957
+    - timestamp: "2017-06-01T00:00:00Z"
+      value: 924
+    - timestamp: "2017-07-01T00:00:00Z"
+      value: 881
+    - timestamp: "2017-08-01T00:00:00Z"
+      value: 4323
+    - timestamp: "2017-09-01T00:00:00Z"
+      value: 784
+    - timestamp: "2017-10-01T00:00:00Z"
+      value: 791
+    - timestamp: "2017-11-01T00:00:00Z"
+      value: 760
+    - timestamp: "2017-12-01T00:00:00Z"
+      value: 3212
+    - timestamp: "2018-01-01T00:00:00Z"
+      value: 828
+    - timestamp: "2018-02-01T00:00:00Z"
+      value: 1030
+    - timestamp: "2018-03-01T00:00:00Z"
+      value: 889
+    - timestamp: "2018-04-01T00:00:00Z"
+      value: 902
+    - timestamp: "2018-05-01T00:00:00Z"
+      value: 969
+    - timestamp: "2018-06-01T00:00:00Z"
+      value: 947
+    - timestamp: "2018-07-01T00:00:00Z"
+      value: 908
+    - timestamp: "2018-08-01T00:00:00Z"
+      value: 867
+    - timestamp: "2018-09-01T00:00:00Z"
+      value: 815
+    - timestamp: "2018-10-01T00:00:00Z"
+      value: 812
+    - timestamp: "2018-11-01T00:00:00Z"
+      value: 773
+    - timestamp: "2018-12-01T00:00:00Z"
+      value: 813
+    - timestamp: "2019-01-01T00:00:00Z"
+      value: 834
+    - timestamp: "2019-02-01T00:00:00Z"
+      value: 782
+    - timestamp: "2019-03-01T00:00:00Z"
+      value: 892
+    - timestamp: "2019-04-01T00:00:00Z"
+      value: 903
+    - timestamp: "2019-05-01T00:00:00Z"
+      value: 966
+    - timestamp: "2019-06-01T00:00:00Z"
+      value: 937
+    - timestamp: "2019-07-01T00:00:00Z"
+      value: 896
+    - timestamp: "2019-08-01T00:00:00Z"
+      value: 858
+    - timestamp: "2019-09-01T00:00:00Z"
+      value: 817
+    - timestamp: "2019-10-01T00:00:00Z"
+      value: 827
+    - timestamp: "2019-11-01T00:00:00Z"
+      value: 797
+    - timestamp: "2019-12-01T00:00:00Z"
+      value: 843
+  OHCLV:
+    type: "object"
+    properties:
+      close:
+        type: "number"
+        format: "float"
+        example: 8612.83
+        description: "Closing price quote of the time frame with two decimal points"
+      high:
+        type: "number"
+        format: "float"
+        example: 8627.58
+        description: "Highest price of the time frame with two decimal points"
       end_date:
         type: "string"
         format: "date"
@@ -414,156 +413,202 @@ definitions:
         format: "float"
         example: 8148.72
         description: "Opening price quote of the time frame with two decimal points"
-      close:
-        type: "number"
-        format: "float"
-        example: 9148.72
-        description: "Closing price quote of the time frame with two decimal points"
-      high:
-        type: "number"
-        format: "float"
-        example: 9190.72
-        description: "Highest price of the time frame with two decimal points"
-      vol:
+      time:
+        type: "string"
+        format: "date"
+        example: "2019-03-27T12:00:00.000Z"
+        description: "Timestamp of the beggining of the frame"
+      volume:
         type: "number"
         format: "float"
         example: 231.32
         description: "Volume of currency exchanged in the time frame with two decimal\
           \ points"
-    example:
-      end_date: "2014/12/23"
-      high: 9190.72
-      vol: 231.32
-      close: 9148.72
-      open: 8148.72
-      start_date: "2013/12/23"
-  inline_response_200:
-    properties:
-      ename:
-        type: "string"
-  inline_response_200_2:
-    properties:
-      blockchain:
-        type: "string"
-  inline_response_201_1:
-    properties:
-      start_date:
-        type: "string"
-        example: "2013/12/23"
-        description: "Start date in YYYY/MM/DD"
-      end_date:
-        type: "string"
-        example: "2014/12/23"
-        description: "End date in YYYY/MM/DD"
-      open:
-        type: "string"
-        example: "8148.72"
-        description: "Opening price quote of the time frame with two decimal points"
-      close:
-        type: "string"
-        example: "9148.72"
-        description: "Closing price quote of the time frame with two decimal points"
-      high:
-        type: "string"
-        example: "9190.72"
-        description: "Highest price of the time frame with two decimal points"
-      vol:
-        type: "string"
-        example: "231.32"
-        description: "Volume of currency exchanged in the time frame with two decimal\
-          \ points"
-    example:
-      end_date: "2014/12/23"
-      high: "9190.72"
-      vol: "231.32"
-      close: "9148.72"
-      open: "8148.72"
-      start_date: "2013/12/23"
-  text:
+      usdVolume:
+        type: "number"
+        format: "float"
+        example: 1379412.9
+        description: "Volume of currency exchanged in dollars the time frame with\
+          \ two decimal points"
+      btcVolume:
+        type: "number"
+        format: "float"
+        example: 160.15672
+        description: "Volume of currency exchanged in dollars the time frame with\
+          \ two decimal points"
+      quoteVolume:
+        type: "number"
+        format: "float"
+        example: 1379412.9
+        description: "Volume of currency exchanged in dollars the time frame with\
+          \ two decimal points"
+  CandleRequest:
     type: "object"
     properties:
-      text:
+      base_trading_symbol:
         type: "string"
-        description: "Text to be analyzed"
-  request_1:
-    type: "object"
-    properties:
+        example: "BTC"
+        description: "Name of the currency pair"
       exchange:
         type: "string"
-        example: "bitstamp"
+        example: "coinbasepro"
         description: "Name of the exchange"
-      market:
-        type: "string"
-        example: "BTC-USD"
-        description: "Name of the currency pair"
-      data_format:
-        type: "string"
-        example: "standard"
-        description: "Name of the data format availables (standard)"
-      orient:
-        type: "string"
-        example: "records"
-        description: "Name of the market"
-      start_date:
-        type: "string"
-        example: "2013/12/31"
-        description: "Start date in YYYY/MM/DD"
-      end_date:
-        type: "string"
-        example: "2014/01/02 "
-        description: "End date YYYY/MM/DD"
-  request_2:
-    type: "object"
-    properties:
-      exchange:
-        type: "string"
-        example: "bitstamp"
-        description: "Name of the exchange"
-      market:
-        type: "string"
-        example: "BTC-USD"
-        description: "Name of the currency pair"
-      data_format:
-        type: "string"
-        example: "standard"
-        description: "Name of the data format availables (standard)"
-      orient:
-        type: "string"
-        example: "records"
-        description: "Name of the market"
-      candle_size:
+      interval:
         type: "string"
         example: "6h"
         description: "Name of the market"
-      start_date:
+      quote_trading_symbol:
         type: "string"
-        example: "2013/12/31"
-        description: "Start date in YYYY/MM/DD"
-      end_date:
+        example: "USD"
+        description: "Name of the data format availables (standard)"
+    example:
+      quote_trading_symbol: "USD"
+      exchange: "coinbasepro"
+      interval: "6h"
+      base_trading_symbol: "BTC"
+  OrderbookRequest:
+    type: "object"
+    properties:
+      base_trading_symbol:
         type: "string"
-        example: "2014/01/02 "
-        description: "End date YYYY/MM/DD"
-  request_3:
+        example: "BTC"
+        description: "Name of the currency pair"
+      exchange:
+        type: "string"
+        example: "coinbasepro"
+        description: "Name of the exchange"
+      limit:
+        type: "number"
+        format: "integer"
+        example: 2
+        description: "Limit depth to extract from the orderbook"
+      quote_trading_symbol:
+        type: "string"
+        example: "USD"
+        description: "Name of the data format availables (standard)"
+    example:
+      quote_trading_symbol: "USD"
+      limit: 2
+      exchange: "coinbasepro"
+      base_trading_symbol: "BTC"
+  SupportedExchanges:
+    type: "object"
+    properties:
+      bestCaseFee:
+        type: "number"
+        format: "integer"
+        example: 2
+        description: "Best fee scenario offered by the market"
+      worstCaseFee:
+        type: "number"
+        format: "integer"
+        example: 2
+        description: "Limit depth to extract from the orderbook"
+      exchange:
+        type: "string"
+        example: "USD"
+        description: "Name of the data format availables (standard)"
+    example:
+      bestCaseFee: 2
+      worstCaseFee: 2
+      exchange: "USD"
+  OrderbookResponse:
+    type: "object"
+    properties:
+      base_trading_symbol:
+        type: "string"
+        example: "BTC"
+        description: "Name of the currency pair"
+      exchange:
+        type: "string"
+        example: "coinbasepro"
+        description: "Name of the exchange"
+      limit:
+        type: "number"
+        format: "integer"
+        example: 2
+        description: "Limit depth to extract from the orderbook"
+      quote_trading_symbol:
+        type: "string"
+        example: "USD"
+        description: "Name of the data format availables (standard)"
+    example:
+      quote_trading_symbol: "USD"
+      limit: 2
+      exchange: "coinbasepro"
+      base_trading_symbol: "BTC"
+  ExchangeAssetsResponse:
+    type: "array"
+    items:
+      $ref: "#/definitions/ExchangeAssetsResponse_inner"
+  TickerResponse:
+    type: "array"
+    items:
+      $ref: "#/definitions/TickerResponse_inner"
+  CandleResponse:
+    type: "array"
+    items:
+      $ref: "#/definitions/OHCLV"
+  Exchange:
     type: "object"
     properties:
       exchange:
         type: "string"
-        example: "bitstamp"
-        description: "Name of the exchange"
-      market:
+        example: "binance"
+        description: "Name of the digital asset exchange to get data from"
+    example:
+      exchange: "binance"
+  ExchangeAssetsResponse_inner:
+    type: "object"
+    properties:
+      name:
         type: "string"
-        example: "BTC-USD"
-        description: "Name of the currency pair"
-      data_format:
+        example: "Ethereum"
+        description: "Highest price of the time frame with two decimal points"
+      id:
+        type: "number"
+        format: "integer"
+        example: 33
+        description: "Percetange change in the last 24 hours"
+      tradinSym:
         type: "string"
-        example: "OHCLV"
-        description: "Name of the data format availables (standard, OHCLV, VWAP, ticker,\
-          \ raw)"
-      start_date:
+        example: "ETH"
+        description: "Volume of currency exchanged in the time frame with two decimal\
+          \ points"
+      symbol:
         type: "string"
-        example: "2013/12/31"
-        description: "Start date in YYYY/MM/DD"
-      end_date:
+        example: "ETH"
+        description: "Volume of currency exchanged in the time frame with two decimal\
+          \ points"
+  TickerResponse_inner:
+    type: "object"
+    properties:
+      lastUpdated:
         type: "string"
-        example: "2014/01/02 "
-        description: "End date YYYY/MM/DD"
+        format: "date"
+        example: "2019-03-27T12:00:00.000Z"
+        description: "Closing price quote of the time frame with two decimal points"
+      name:
+        type: "string"
+        example: "Ethereum"
+        description: "Highest price of the time frame with two decimal points"
+      percentChange24hUsd:
+        type: "number"
+        format: "float"
+        example: 0.7300863
+        description: "Percetange change in the last 24 hours"
+      priceBtc:
+        type: "number"
+        format: "float"
+        example: 0.0202135
+        description: "Opening price quote of the time frame with two decimal points"
+      priceUsd:
+        type: "number"
+        format: "float"
+        example: 148.255
+        description: "Timestamp of the beggining of the frame"
+      symbol:
+        type: "string"
+        example: "ETH"
+        description: "Volume of currency exchanged in the time frame with two decimal\
+          \ points"

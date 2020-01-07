@@ -9,8 +9,13 @@
 
 package brainrex
 
-// The text object takes any string of text.
-type Text struct {
-	// String of text or document to be analyzed
-	Text string `json:"text,omitempty"`
+import (
+	"time"
+)
+
+type PointTimeSeries struct {
+	// Timestamp in datetime format
+	Timestamp time.Time `json:"timestamp,omitempty"`
+	// Value of the time series point
+	Value float32 `json:"value,omitempty"`
 }
